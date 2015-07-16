@@ -22,15 +22,14 @@
   </head>
   <body>
 
-    <nav class="navbar navbar-default">
+    <nav class="navbar navbar-default" id="main-navbar">
       <div class="container-fluid">
         <div class="navbar-header">
-          <a class="navbar-brand" href="#">
+          <a class="navbar-brand" href="#" id="brand-button">
             Mult v0.1
           </a>
         </div>
-
-        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Hamburger button -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav navbar-right">
             <li class="dropdown">
@@ -46,27 +45,32 @@
               </ul>
             </li>
           </ul>
-
-
+        </div><!-- end hamburger -->
       </div>
     </nav>
+
+    <div class="container" id="jumbotron-container">
+    </div>
 
     <div id="notifications">
       <!-- notifications added after each submission -->
     </div>
 
     <div id="question-answer">
-
-      <span id="question">
-        <span id="num-1">0</span> &times; <span id="num-2">0</span> = 
-      </span>
-      <input type="text" class="form-control" id="answer" placeholder="?">
-      <button type="button" class="btn btn-success" id="answer-button">Check answer</button>
+      <div id="question-answer-input">
+        <span id="question">
+          <span id="num-1">0</span> &times; <span id="num-2">0</span> = 
+        </span>
+        <input type="text" class="form-control" id="answer" placeholder="?">
+        <!-- <button type="button" class="btn btn-success" id="answer-button">Check answer</button> -->
+      </div>
+      <div id="question-answer-teacher"></div>
     </div>
 
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="jquery.min.js"></script>
+    <script src="jquery-ui/jquery-ui.min.js"></script>
 
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <!-- Latest compiled and minified JavaScript -->
@@ -75,11 +79,20 @@
     <!-- Main JS file -->
     <script src="mult.js"></script>
 
+    <script type="template" id="jumbotron-template">
+      <div class="jumbotron" style="width:768px; margin: 0 auto 0 auto; display: none;">
+        <h1>Mult v0.1</h1>
+        <p>Mult is a super-simple multiplication tables memorization app.</p>
+        <p><a class="btn btn-primary btn-lg" href="#" id="close-jumbotron" role="button">Close</a></p>
+      </div>
+    </script>
 
     <style>
       #notifications { margin: 50px auto 0 auto; width: 768px; }
       #question-answer { text-align: center; margin: 20px auto 0 auto; width: 768px; }
       #question { font-size: 108px; vertical-align: middle; }
+      #question-answer-teacher p { font-size: 108px; vertical-align: middle; }
+      #question-answer-teacher p span { display: none; }
       #answer { font-size: 108px; text-align: center; height: 160px; width: 240px; vertical-align: middle; display: inline; }
       #answer-button { display: block; width: 50%; margin: 20px auto 0 auto; }
     </style>

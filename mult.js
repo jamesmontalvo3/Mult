@@ -27,13 +27,19 @@ function checkAnswer () {
 	var QnA = current.first + ' x ' + current.second + ' = ' + (current.first * current.second);
 
 	if ( answer === current.first * current.second ) {
-		notify( 'success', '<strong>Correct!</strong> ' + QnA );
+		//notify( 'success', '<strong>Correct!</strong> ' + QnA );
+		// $("#answer").css(
+		$("#answer").effect("highlight", { color: "#3c763d" }, 1000, function() { // #d6e9c6
+			setupQuestion();
+		});
 	}
 	else {
-		notify( 'warning', '<strong>Nope.</strong> ' + QnA );
+		clearNotify();
+		$("#question-answer-input").fadeOut( 1000, function() {
+			teachCurrent();
+		});
 	}
 
-	setupQuestion();
 }
 
 function notify ( type, msg ) {
@@ -42,11 +48,60 @@ function notify ( type, msg ) {
 	);
 }
 
+function clearNotify () {
+	$("#notifications").empty();
+}
+
+/**
+ * Make it say:
+ * <alert>Actually...</alert>
+ * A x B = <green>C</green>
+ */
+function teachCurrent () {
+	var teach = "Actually..."
+		+ "<p><span id='teach-first'>" + current.first + "</span>"
+		+ "<span id='teach-times-symbol'> &times; </span>"
+		+ "<span id='teach-second'>" + current.second + "</span>"
+		+ "<span id='teach-equals-symbol'> = </span>"
+		+ "<span id='teach-product'>" + (current.first * current.second) + "</span></p>";
+
+	$("#question-answer-teacher").html( teach ).fadeIn( 1000 );
+	setTimeout( function() {
+		fadeInList(
+			["teach-first", "teach-times-symbol", "teach-second", "teach-equals-symbol", "teach-product"],
+			function () {
+				setTimeout( function() {
+					$("#question-answer-teacher").fadeOut( 1000, function() {
+						$(this).empty();
+						setupQuestion();
+						$("#question-answer-input").fadeIn( 1000 );
+					});
+				}, 3000);
+			}
+		);
+	}, 1000 );
+
+}
+
+function fadeInList ( items, completeFn ) {
+	if ( items.length > 0 ) {
+		$("#"+items[0]).fadeIn( 300 );
+		items.shift();
+		setTimeout( function() {
+			fadeInList( items, completeFn );
+		}, 500 );
+	}
+	else {
+		completeFn();
+	}
+}
+
 setupQuestion();
 
-$("#answer-button").click( function() {
-	checkAnswer();
-});
+// removed button so no need for this unless i bring it back
+// $("#answer-button").click( function() {
+// 	checkAnswer();
+// });
 
 
 $("#answer").keyup( function(e){ 
@@ -57,4 +112,17 @@ $("#answer").keyup( function(e){
     if ( code==32 || code==13 || code==188 || code==186 ){
         checkAnswer();
     }
+});
+
+$("#brand-button").click( function() {
+	if ( $(".jumbotron").size() ) {
+		$(".jumbotron").fadeOut( 200, function(){ $(this).remove() } );
+	}
+	else {
+		$("#jumbotron-container").html( $("#jumbotron-template").html() );
+		$(".jumbotron").fadeIn( 200 );
+		$("#close-jumbotron").click( function() {
+			$(".jumbotron").fadeOut( 200, function(){ $(this).remove() } );
+		});
+	}
 });
