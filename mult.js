@@ -40,7 +40,7 @@ function removeFromDeck (m) {
 			deck.splice( i, 1 );
 		}
 	}
-	$("#fake-console").text( deck.length );
+	// $("#fake-console").text( deck.length );
 }
 
 function setupQuestion ( max ) {
