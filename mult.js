@@ -125,13 +125,16 @@ function teachCurrent () {
 			function () {
 				$("#question-answer-teacher").append(
 					$('<button type="button" class="btn btn-success">Next <span class="glyphicon glyphicon-chevron-right"></span></button>')
-						.click( clearTeachCurrent )
+						.click( function() {
+							$("body").unbind( "keypress" );
+							clearTeachCurrent();
+						})
 				);
 
 				$("body").keypress( function(e) {
 					e.preventDefault();
 					$("body").unbind( "keypress" );
-					clearTeachCurrent()
+					clearTeachCurrent();
 				});
 				// setTimeout( function() {
 				// 	$("#question-answer-teacher").fadeOut( 1000, function() {
@@ -180,7 +183,7 @@ $("#answer").keydown( function(e){
     if ( code==13 || code==9 ) {
     	e.preventDefault();
     }
-    $("#fake-console").text( code );
+    // $("#fake-console").text( code );
     //   value isn't blank       tab        ???         enter       ???          ???
     if ( $(this).val() != "" && (code==9 || code==32 || code==13 || code==188 || code==186) ) {
         checkAnswer();
