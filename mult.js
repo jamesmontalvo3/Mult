@@ -39,6 +39,7 @@ function removeFromDeck (m) {
 			deck.splice( i, 1 );
 		}
 	}
+	$("#counter").text( deck.length );
 }
 
 function setupQuestion ( max ) {
