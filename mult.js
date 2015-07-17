@@ -23,7 +23,7 @@ function buildDeck ( min, max ) {
 
 function pullFromDeck () {
 	if ( deck.length === 0 ) {
-		notify( "success", "No more in deck. Great job! Starting over." );
+		notify( "success", "No more in deck. Great job! Starting over.", 3000 );
 		buildDeck( minMultiplier, maxMultiplier );
 		return pullFromDeck();
 	}
@@ -51,6 +51,7 @@ function setupQuestion ( max ) {
 	$("#num-1").text( current.first );
 	$("#num-2").text( current.second );
 	$("#answer").val("");
+	refocus();
 }
 
 function getRandomInt ( max ) {
@@ -86,10 +87,18 @@ function checkAnswer () {
 
 }
 
-function notify ( type, msg ) {
+function notify ( type, msg, duration ) {
+	var duration = duration || 0;
 	$("#notifications").html(
 		'<div class="alert alert-' + type + '" role="alert">' + msg + '</div>'
 	);
+	if ( duration ) {
+		setTimeout( function(){
+			$("#notifications").children().fadeOut( 300, function() {
+				$("#notifications").empty();
+			});
+		}, duration);
+	}
 }
 
 function clearNotify () {
@@ -119,6 +128,11 @@ function teachCurrent () {
 						.click( clearTeachCurrent )
 				);
 
+				$("body").keypress( function(e) {
+					e.preventDefault();
+					$("body").unbind( "keypress" );
+					clearTeachCurrent()
+				});
 				// setTimeout( function() {
 				// 	$("#question-answer-teacher").fadeOut( 1000, function() {
 				// 	});
@@ -133,6 +147,7 @@ function clearTeachCurrent () {
 	$("#question-answer-teacher").empty();
 	setupQuestion();
 	$("#question-answer-input").fadeIn( 1000 );
+	refocus();
 }
 
 function fadeInList ( items, completeFn ) {
@@ -146,6 +161,10 @@ function fadeInList ( items, completeFn ) {
 	else {
 		completeFn();
 	}
+}
+
+function refocus () {
+	$("#answer").focus();
 }
 
 buildDeck( minMultiplier, maxMultiplier );
@@ -162,7 +181,7 @@ $("#answer").keyup( function(e){
     if (code==13) {
     	e.preventDefault();
     }
-    if ( code==32 || code==13 || code==188 || code==186 ){
+    if ( $(this).val() != "" && (code==32 || code==13 || code==188 || code==186) ){
         checkAnswer();
     }
 });
