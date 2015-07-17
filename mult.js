@@ -1,3 +1,7 @@
+/**
+ * Config variables
+ */
+var teachStepTime = 350;
 
 var current = {
 	first: false,
@@ -29,14 +33,16 @@ function checkAnswer () {
 	if ( answer === current.first * current.second ) {
 		//notify( 'success', '<strong>Correct!</strong> ' + QnA );
 		// $("#answer").css(
-		$("#answer").effect("highlight", { color: "#3c763d" }, 1000, function() { // #d6e9c6
+		$("#answer").effect("highlight", { color: "#3c763d" }, 1000, function() {
 			setupQuestion();
 		});
 	}
 	else {
 		clearNotify();
-		$("#question-answer-input").fadeOut( 1000, function() {
-			teachCurrent();
+		$("#answer").effect("highlight", { color: "#a94442" }, 1000, function() {
+			$("#question-answer-input").fadeOut( 200, function() {
+				teachCurrent();
+			});
 		});
 	}
 
@@ -58,8 +64,8 @@ function clearNotify () {
  * A x B = <green>C</green>
  */
 function teachCurrent () {
-	var teach = "Actually..."
-		+ "<p><span id='teach-first'>" + current.first + "</span>"
+	var teach =
+		"<p><span id='teach-first'>" + current.first + "</span>"
 		+ "<span id='teach-times-symbol'> &times; </span>"
 		+ "<span id='teach-second'>" + current.second + "</span>"
 		+ "<span id='teach-equals-symbol'> = </span>"
@@ -70,17 +76,25 @@ function teachCurrent () {
 		fadeInList(
 			["teach-first", "teach-times-symbol", "teach-second", "teach-equals-symbol", "teach-product"],
 			function () {
-				setTimeout( function() {
-					$("#question-answer-teacher").fadeOut( 1000, function() {
-						$(this).empty();
-						setupQuestion();
-						$("#question-answer-input").fadeIn( 1000 );
-					});
-				}, 3000);
+				$("#question-answer-teacher").append(
+					$('<button type="button" class="btn btn-success">Next <span class="glyphicon glyphicon-chevron-right"></span></button>')
+						.click( clearTeachCurrent )
+				);
+
+				// setTimeout( function() {
+				// 	$("#question-answer-teacher").fadeOut( 1000, function() {
+				// 	});
+				// }, 3000);
 			}
 		);
-	}, 1000 );
+	}, 200 );
 
+}
+
+function clearTeachCurrent () {
+	$("#question-answer-teacher").empty();
+	setupQuestion();
+	$("#question-answer-input").fadeIn( 1000 );
 }
 
 function fadeInList ( items, completeFn ) {
@@ -89,7 +103,7 @@ function fadeInList ( items, completeFn ) {
 		items.shift();
 		setTimeout( function() {
 			fadeInList( items, completeFn );
-		}, 500 );
+		}, teachStepTime );
 	}
 	else {
 		completeFn();
