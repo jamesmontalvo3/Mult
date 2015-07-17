@@ -40,7 +40,7 @@ function removeFromDeck (m) {
 			deck.splice( i, 1 );
 		}
 	}
-	$("#counter").text( deck.length );
+	$("#fake-console").text( deck.length );
 }
 
 function setupQuestion ( max ) {
@@ -181,6 +181,7 @@ $("#answer").keyup( function(e){
     if (code==13) {
     	e.preventDefault();
     }
+    $("#fake-console").text( code );
     if ( $(this).val() != "" && (code==32 || code==13 || code==188 || code==186) ){
         checkAnswer();
     }
