@@ -175,14 +175,14 @@ setupQuestion();
 // 	checkAnswer();
 // });
 
-
-$("#answer").keyup( function(e){ 
+$("#answer").keydown( function(e){ 
     var code = e.which; // recommended to use e.which, it's normalized across browsers
-    if (code==13) {
+    if ( code==13 || code==9 ) {
     	e.preventDefault();
     }
     $("#fake-console").text( code );
-    if ( $(this).val() != "" && (code==32 || code==13 || code==188 || code==186) ){
+    //   value isn't blank       tab        ???         enter       ???          ???
+    if ( $(this).val() != "" && (code==9 || code==32 || code==13 || code==188 || code==186) ) {
         checkAnswer();
     }
 });
