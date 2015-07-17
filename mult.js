@@ -13,6 +13,7 @@ var current = {
 var deck = [];
 
 function buildDeck ( min, max ) {
+	deck = [];
 	for ( var f = min; f <= max; f++ ) {
 		for ( var s = min; s <= max; s++ ) {
 			deck[ deck.length ] = { first: f, second: s };
