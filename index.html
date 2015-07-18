@@ -13,6 +13,9 @@
     <!-- Optional theme -->
     <link rel="stylesheet" href="bootstrap-3.3.5/css/bootstrap-theme.min.css">
 
+    <!-- Application CSS -->
+    <link rel="stylesheet" href="main.css">
+
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -22,6 +25,7 @@
   </head>
   <body>
 
+    <!-- Navigation bar -->
     <nav class="navbar navbar-default" id="main-navbar">
       <div class="container-fluid">
         <div class="navbar-header">
@@ -49,9 +53,11 @@
       </div>
     </nav>
 
+    <!-- jumbotron container for Mult app description -->
     <div class="container" id="jumbotron-container">
     </div>
 
+    <!-- Question/answer section -->
     <div id="question-answer">
       <div id="question-answer-input">
         <span id="question">
@@ -63,21 +69,22 @@
       <div id="question-answer-teacher"></div>
     </div>
 
+    <!-- notifications -->
     <div id="notifications">
       <!-- notifications added after each submission -->
     </div>
 
-    <div id="fake-console" style="margin: 50px;"></div>
+    <!-- used for testing only
+    <div id="fake-console" style="margin: 50px;"></div> -->
 
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <!-- jQuery and jQuery UI -->
     <script src="jquery.min.js"></script>
     <script src="jquery-ui/jquery-ui.min.js"></script>
 
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <!-- Latest compiled and minified JavaScript -->
+    <!-- Bootstrap JS -->
     <script src="bootstrap-3.3.5/js/bootstrap.min.js"></script>
 
-    <!-- Main JS file -->
+    <!-- Main application JS file -->
     <script src="mult.js"></script>
 
     <script type="template" id="jumbotron-template">
@@ -87,34 +94,5 @@
         <p><a class="btn btn-primary btn-lg" href="#" id="close-jumbotron" role="button">Close</a></p>
       </div>
     </script>
-
-    <style>
-      @media (min-width:768px) {
-        #notifications { margin: 50px auto 0 auto; width: 768px; }
-        #question-answer { text-align: center; margin: 20px auto 0 auto; width: 768px; }
-        #question { font-size: 108px; vertical-align: middle; }
-        #question-answer-teacher p { font-size: 108px; vertical-align: middle; }
-        #question-answer-teacher p span { display: none; }
-        #answer { font-size: 108px; text-align: center; height: 160px; width: 240px; vertical-align: middle; display: inline; }
-        #answer-button { display: block; width: 50%; margin: 20px auto 0 auto; }
-      }
-      @media (max-width:767px) {
-        #notifications { margin: 25px auto 0 auto; width: 90%; }
-        #question-answer { text-align: center; margin: 20px auto 0 auto; width: 98%; }
-        #question { font-size: 48px; vertical-align: middle; }
-        #question-answer-teacher p { font-size: 48px; vertical-align: middle; }
-        #question-answer-teacher p span { display: none; }
-        #answer { font-size: 48px; text-align: center; height: 90px; width: 120px; vertical-align: middle; display: inline; }
-        #answer-button { display: block; width: 50%; margin: 20px auto 0 auto; }
-      }
-
-      /** remove spinner from input type = number on desktop browsers (maybe just Chrome) **/
-      input[type=number]::-webkit-inner-spin-button,
-      input[type=number]::-webkit-outer-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-      }
-
-    </style>
   </body>
 </html>

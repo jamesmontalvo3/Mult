@@ -3,7 +3,8 @@
  */
 var teachStepTime = 350,
 	minMultiplier = 0,
-	maxMultiplier = 12;
+	maxMultiplier = 12,
+	streakCycle = 5;
 
 var current = {
 	first: false,
@@ -180,8 +181,20 @@ function clearStreak () {
 
 function handleStreak () {
 	numInRow++;
-	if ( numInRow % 5 === 0 ) {
-		notify( "success", "<strong>" + numInRow + " in a row!</strong> Great job!", 3000 );
+	var messages = [
+		"Great job!",
+		"Keep up the good work!",
+		"Amazing!",
+		"You are awesome!",
+		"Super duper!",
+		"Go brag to your parents!",
+		"You're on fire!",
+		"Boom!"
+	];
+	if ( numInRow % streakCycle === 0 ) {
+		var msgIndex = ( numInRow / streakCycle ) - 1;
+		var msg = messages[ msgIndex ] || messages[ messages.length - 1 ];
+		notify( "success", "<strong>" + numInRow + " in a row!</strong> " + msg, 4000 );
 	}
 }
 
