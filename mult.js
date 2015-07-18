@@ -10,6 +10,8 @@ var current = {
 	second: false
 };
 
+var numInRow = 0;
+
 var deck = [];
 
 function buildDeck ( min, max ) {
@@ -73,11 +75,13 @@ function checkAnswer () {
 		// $("#answer").css(
 		$("#answer").effect("highlight", { color: "#3c763d" }, 1000, function() { // #d6e9c6
 			removeFromDeck( current );
+			handleStreak();
 			setupQuestion();
 		});
 	}
 	else {
 		clearNotify();
+		clearStreak();
 		$("#answer").effect("highlight", { color: "#a94442" }, 1000, function() {
 			$("#question-answer-input").fadeOut( 200, function() {
 				teachCurrent();
@@ -168,6 +172,17 @@ function fadeInList ( items, completeFn ) {
 
 function refocus () {
 	$("#answer").focus();
+}
+
+function clearStreak () {
+	numInRow = 0;
+}
+
+function handleStreak () {
+	numInRow++;
+	if ( numInRow % 5 === 0 ) {
+		notify( "success", "<strong>" + numInRow + " in a row!</strong> Great job!", 3000 );
+	}
 }
 
 buildDeck( minMultiplier, maxMultiplier );
