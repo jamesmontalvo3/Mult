@@ -15,31 +15,25 @@ var current = {
 	second: false
 };
 
-// temp i18n var
-var i18n = {
-	"deck-empty": "No more in deck. Great job! Starting over.",
-	"next-question": "Next ",
-	"correct-streak-messages": [
-		"<strong>$1 in a row!</strong> Great job!",
-		"<strong>$1 in a row!</strong> Keep up the good work!",
-		"Seriously?! <strong>$1 in a row?!</strong> Amazing!",
-		"<strong>$1 in a row!</strong> You are awesome!",
-		"<strong>$1 in a row!</strong> Super duper!",
-		"<strong>$1 in a row!</strong> Go brag to your parents!",
-		"<strong>$1 in a row!</strong> You're on fire!",
-		"<strong>$1 in a row!</strong> Boom!"
-	],
-	"teach-explanation-zero": "Remember: anything times zero equals zero",
-	"teach-explanation-one": "Remember: anything times one equals itself",
-	"teach-explanation-ten": "Remember: when you multiply anything times ten, just add a zero on the end",
-	"question-removed-from-deck": "You've gotten $1 x $2 correct $3 times in a row! We won't ask you that one anymore. Great job!"
-};
 
 var msg = {
 
+	i18n: {}, // retrieved from static files
+
+	loadI18nFromFile: function ( langCode, callback ) {
+		$.getJSON(
+			"i18n/" + langCode + ".json",
+			{},
+			function ( response ) {
+				msg.i18n = response;
+				callback();
+			}
+		);
+	},
+
 	getI18n: function ( msgId ) {
-		if ( i18n[ msgId ] ) {
-			return i18n[ msgId ];
+		if ( this.i18n[ msgId ] ) {
+			return this.i18n[ msgId ];
 		}
 		else {
 			var errMsg = "<" + msgId + ">";
@@ -417,35 +411,40 @@ function handleStreak () {
 	}
 }
 
-deck.build( minMultiplier, maxMultiplier );
-setupQuestion();
+// load i18n, then start app
+msg.loadI18nFromFile( "en", function() {
 
-// removed button so no need for this unless i bring it back
-// $("#answer-button").click( function() {
-// 	checkAnswer();
-// });
+	deck.build( minMultiplier, maxMultiplier );
+	setupQuestion();
 
-$("#answer").keydown( function(e){ 
-    var code = e.which; // recommended to use e.which, it's normalized across browsers
-    if ( code==13 || code==9 ) {
-    	e.preventDefault();
-    }
-    // $("#fake-console").text( code );
-    //   value isn't blank       tab        ???         enter       ???          ???
-    if ( $(this).val() != "" && (code==9 || code==32 || code==13 || code==188 || code==186) ) {
-        checkAnswer();
-    }
-});
+	// removed button so no need for this unless i bring it back
+	// $("#answer-button").click( function() {
+	// 	checkAnswer();
+	// });
 
-$("#brand-button").click( function() {
-	if ( $(".jumbotron").size() ) {
-		$(".jumbotron").fadeOut( 200, function(){ $(this).remove() } );
-	}
-	else {
-		$("#jumbotron-container").html( $("#jumbotron-template").html() );
-		$(".jumbotron").fadeIn( 200 );
-		$("#close-jumbotron").click( function() {
+	$("#answer").keydown( function(e){ 
+	    var code = e.which; // recommended to use e.which, it's normalized across browsers
+	    if ( code==13 || code==9 ) {
+	    	e.preventDefault();
+	    }
+	    // $("#fake-console").text( code );
+	    //   value isn't blank       tab        ???         enter       ???          ???
+	    if ( $(this).val() != "" && (code==9 || code==32 || code==13 || code==188 || code==186) ) {
+	        checkAnswer();
+	    }
+	});
+
+	$("#brand-button").click( function() {
+		if ( $(".jumbotron").size() ) {
 			$(".jumbotron").fadeOut( 200, function(){ $(this).remove() } );
-		});
-	}
+		}
+		else {
+			$("#jumbotron-container").html( $("#jumbotron-template").html() );
+			$(".jumbotron").fadeIn( 200 );
+			$("#close-jumbotron").click( function() {
+				$(".jumbotron").fadeOut( 200, function(){ $(this).remove() } );
+			});
+		}
+	});
+
 });

@@ -1,4 +1,19 @@
 {
 	"app-name": "Mult",
-	
+	"deck-empty": "No more in deck. Great job! Starting over.",
+	"next-question": "Next ",
+	"correct-streak-messages": [
+		"<strong>$1 in a row!</strong> Great job!",
+		"<strong>$1 in a row!</strong> Keep up the good work!",
+		"Seriously?! <strong>$1 in a row?!</strong> Amazing!",
+		"<strong>$1 in a row!</strong> You are awesome!",
+		"<strong>$1 in a row!</strong> Super duper!",
+		"<strong>$1 in a row!</strong> Go brag to your parents!",
+		"<strong>$1 in a row!</strong> You're on fire!",
+		"<strong>$1 in a row!</strong> Boom!"
+	],
+	"teach-explanation-zero": "Remember: anything times zero equals zero",
+	"teach-explanation-one": "Remember: anything times one equals itself",
+	"teach-explanation-ten": "Remember: when you multiply anything times ten, just add a zero on the end",
+	"question-removed-from-deck": "You've gotten $1 x $2 correct $3 times in a row! We won't ask you that one anymore. Great job!"
 }
