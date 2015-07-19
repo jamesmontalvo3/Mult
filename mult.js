@@ -11,6 +11,21 @@ var current = {
 	second: false
 };
 
+// temp i18n var
+var i18n = {
+	"deck-empty": "No more in deck. Great job! Starting over."
+};
+
+function msg ( msgId ) {
+	var rawMsg = i18n[ msgId ];
+	if ( arguments.length > 1 ) {
+		for ( var i = 1; i < arguments.length; i++ ) {
+			rawMsg.replace('/\$' + i + '/ig', arguments[i]);
+		}
+	}
+	return rawMsg;
+}
+
 var numInRow = 0;
 
 var deck = [];
@@ -26,7 +41,7 @@ function buildDeck ( min, max ) {
 
 function pullFromDeck () {
 	if ( deck.length === 0 ) {
-		notify( "success", "No more in deck. Great job! Starting over.", 3000 );
+		notify( "success", i18n["deck-empty"], 3000 );
 		buildDeck( minMultiplier, maxMultiplier );
 		return pullFromDeck();
 	}
