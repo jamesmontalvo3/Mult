@@ -1,3 +1,6 @@
+.jumbotron ul { margin-top: 20px; margin-bottom: 20px; }
+#custom-range-min, #custom-range-max { display: inline; width: 50px; }
+
 @media (min-width:768px) {
   #notifications { margin: 50px auto 0 auto; width: 768px; }
   #question-answer { text-align: center; margin: 20px auto 0 auto; width: 768px; }
@@ -9,8 +12,10 @@
 
   #answer { font-size: 108px; text-align: center; height: 180px; width: 240px; vertical-align: middle; display: inline; }
   #answer-button { display: block; width: 50%; margin: 20px auto 0 auto; }
+  .jumbotron { width:768px; margin: 0 auto 0 auto; display: none; }
 }
-@media (max-width:767px) {
+/** devices with width less than 768px **/
+@media (min-width:350px) and (max-width:767px){
   #notifications { margin: 25px auto 0 auto; width: 90%; }
   #question-answer { text-align: center; margin: 10px auto 0 auto; width: 98%; }
   #question { font-size: 48px; vertical-align: middle; }
@@ -21,6 +26,21 @@
 
   #answer { font-size: 48px; text-align: center; height: 90px; width: 120px; vertical-align: middle; display: inline; }
   #answer-button { display: block; width: 50%; margin: 20px auto 0 auto; }
+  .jumbotron { width: 90%; margin: 0 auto 0 auto; display: none; padding: 20px; }
+}
+/** Small mobile devices (e.g. iPhone 4) **/
+@media (max-width:349px){
+  #notifications { margin: 25px auto 0 auto; width: 90%; }
+  #question-answer { text-align: center; margin: 10px auto 0 auto; width: 98%; }
+  #question { font-size: 36px; vertical-align: middle; }
+
+  #question-answer-teacher p { font-size: 36px; vertical-align: middle; }
+  #question-answer-teacher p span { display: none; }
+  #teach-explanation { display: none; margin-bottom: 10px; font-size: 16px; }
+
+  #answer { font-size: 36px; text-align: center; height: 72px; width: 100px; vertical-align: middle; display: inline; }
+  #answer-button { display: block; width: 50%; margin: 20px auto 0 auto; }
+  .jumbotron { width: 90%; margin: 0 auto 0 auto; display: none; padding: 20px; }
 }
 
 /** remove spinner from input type = number on desktop browsers (maybe just Chrome) **/
@@ -29,3 +49,5 @@ input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+input[type="radio"] { margin-right: 5px; }

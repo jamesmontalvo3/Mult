@@ -15,5 +15,6 @@
 	"teach-explanation-zero": "Remember: anything times zero equals zero",
 	"teach-explanation-one": "Remember: anything times one equals itself",
 	"teach-explanation-ten": "Remember: when you multiply anything times ten, just add a zero on the end",
-	"question-removed-from-deck": "You've gotten $1 x $2 correct $3 times in a row! We won't ask you that one anymore. Great job!"
+	"question-removed-from-deck": "You've gotten $1 x $2 correct $3 times in a row! We won't ask you that one anymore. Great job!",
+	"status-list-item": "On $2 question(s) you need to get $1 more correct answer(s)"
 }

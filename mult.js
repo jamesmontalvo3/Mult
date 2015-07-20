@@ -2,6 +2,7 @@
  * Config variables
  */
 var teachStepTime = 350,
+	highlightLength = 500,
 	minMultiplier = 0,
 	maxMultiplier = 12,
 	streakCycle = 5,
@@ -97,7 +98,8 @@ var deck = {
 					second: s,
 					attempts: 0,
 					correct: 0,
-					totalCorrect: 0
+					totalCorrect: 0,
+					totalIncorrect: 0
 				};
 			}
 		}
@@ -144,46 +146,6 @@ var deck = {
 	},
 
 	handleCorrect: function ( newQuestionState ) {
-		// var deck;
-
-		// if ( m.attempts === 0 ) {
-		// 	deck = this.unasked;
-		// }
-		// else {
-		// 	deck = this.asked;
-		// }
-
-		// for ( var i = 0; i < deck.length; i++ ) {
-		// 	if ( deck[i].first === m.first && deck[i].second === m.second ) {
-				
-		// 		// first time asked (and correct)
-		// 		if ( m.attempts === 1 ) {
-		// 			deck.splice( i, 1 ); // remove from unasked
-		// 			this.asked.push( m ); // add to asked
-		// 		}
-
-		// 		// asked before, but not enough times correct in a row to remove entirely
-		// 		else if ( m.correct < correctInRowRequired ) {
-		// 			deck[i] = m; // overwrite existing m with new attempts/correct
-		// 		}
-
-		// 		// asked before, correct enough times in a row not to ask again
-		// 		else {
-		// 			deck.splice( i, 1 );
-		// 			notify(
-		// 				"success",
-		// 				msg.get(
-		// 					"question-removed-from-deck",
-		// 					m.first,
-		// 					m.second,
-		// 					correctInRowRequired 
-		// 				),
-		// 				4000
-		// 			);
-		// 		}
-		// 	}
-		// }
-
 		var questionFromDeck = this.getItemAndLocationFromDeck( newQuestionState );
 
 		newQuestionState.attempts++;
@@ -199,6 +161,7 @@ var deck = {
 
 		newQuestionState.attempts++;
 		newQuestionState.correct = 0;
+		newQuestionState.totalIncorrect++;
 
 		this.handleQuestionChange( newQuestionState, questionFromDeck );
 
@@ -233,12 +196,31 @@ var deck = {
 			);
 		}
 
+	},
+
+	getStatus: function() {
+		var correctNeeded = {};
+		var needed;
+
+		correctNeeded[ correctInRowRequired ] = deck.unasked.length;
+		
+
+		for( var i = 0; i < deck.asked.length; i++ ) {
+			needed = correctInRowRequired - deck.asked[i].correct;
+			if ( typeof correctNeeded[ needed ] !== "undefined" ) {
+				correctNeeded[ needed ]++;
+			}
+			else {
+				correctNeeded[ needed ] = 1;
+			}
+		}
+
+		return correctNeeded;
 	}
 
-};
+}; // end deck
 
-function setupQuestion ( max ) {
-	// var max = max || 12;
+function setupQuestion () {
 	current = deck.selectQuestion();
 	$("#num-1").text( current.first );
 	$("#num-2").text( current.second );
@@ -258,7 +240,7 @@ function checkAnswer () {
 	if ( answer === current.first * current.second ) {
 		$("#answer").effect(
 			// highlight answer box green for 1 sec
-			"highlight", { color: "#3c763d" }, 1000,
+			"highlight", { color: "#3c763d" }, highlightLength,
 
 			function() {
 				deck.handleCorrect( current ); // remove pair from deck
@@ -278,7 +260,7 @@ function checkAnswer () {
 		clearStreak(); // streak reset to zero
 		$("#answer").effect(
 			// highlight answer box red for 1 sec
-			"highlight", { color: "#a94442" }, 1000,
+			"highlight", { color: "#a94442" }, highlightLength,
 
 			// fade out question and answer, the do teaching routine
 			function() {
@@ -374,8 +356,16 @@ function teachCurrent () {
 function clearTeachCurrent () {
 	$("#question-answer-teacher").empty();
 	setupQuestion();
-	$("#question-answer-input").fadeIn( 1000 );
+	showQuestionSection();
 	refocus();
+}
+
+function showQuestionSection ( afterFn ) {
+	$("#question-answer-input").fadeIn( 1000, afterFn );
+}
+
+function hideQuestionSection ( afterFn ) {
+	$("#question-answer-input").fadeOut( 400, afterFn );
 }
 
 function fadeInList ( items, completeFn ) {
@@ -411,6 +401,82 @@ function handleStreak () {
 	}
 }
 
+function closeJumbotron ( showQA, beforeEraseJumbotron, afterEraseJumbotron ) {
+	if ( typeof showQA === "undefined" ) {
+		showQA = true; // default true
+	}
+	$(".jumbotron").fadeOut( 200, function(){
+		if( typeof beforeEraseJumbotron === "function" ) {
+			beforeEraseJumbotron();
+		}
+		$(this).remove();
+		if ( showQA ) {
+			showQuestionSection();
+		}
+	});
+}
+
+function chooseQuestionRange () {
+	createJumbotron( "choose-range",
+		function() {
+			$("#custom-range-min, #custom-range-max").focus( function () {
+				$("#custom-range-radio-button").prop("checked", true)
+			});
+			$("#choose-range").click( function () {
+				closeJumbotron( true, function () {
+					var range = $('input[name="deck-multiplier-range"]:checked').val();
+					if ( range === "custom" ) {
+						range = [
+							parseInt( $("#custom-range-min").val() ),
+							parseInt( $("#custom-range-max").val() )							
+						];
+					}
+					else {
+						range = range.split("-");
+					}
+					deck.build( parseInt( range[0] ), parseInt( range[1] ) );
+					setupQuestion();
+				});
+			} );
+		}
+	);
+}
+
+function createJumbotron ( templateName, preFadeIn, beforeEraseJumbotron ) {
+	var addJumbo = function () {
+		hideQuestionSection( function() {
+			$("#jumbotron-container").html( $("#" + templateName + "-template").html() );
+			if ( typeof preFadeIn === "function" ) {
+				preFadeIn();
+			}
+			$(".jumbotron").fadeIn( 200 );
+			$("#close-jumbotron").click( function() {
+				$(".jumbotron").fadeOut( 200, function(){
+					if( typeof beforeEraseJumbotron === "function" ) {
+						beforeEraseJumbotron();
+					}
+					$(this).remove();
+					showQuestionSection();
+				});
+			});
+		});
+	};
+
+	if ( $("#" + templateName + "-jumbotron").size() ) {
+		$(".jumbotron").fadeOut( 200, function(){ $(this).remove() } );
+		showQuestionSection();
+	}
+	else if ( $(".jumbotron").size() ) {
+		$(".jumbotron").fadeOut( 200, function(){ 
+			$(this).remove();
+			addJumbo();
+		});
+	}
+	else {
+		addJumbo();
+	}
+}
+
 // load i18n, then start app
 msg.loadI18nFromFile( "en", function() {
 
@@ -435,16 +501,18 @@ msg.loadI18nFromFile( "en", function() {
 	});
 
 	$("#brand-button").click( function() {
-		if ( $(".jumbotron").size() ) {
-			$(".jumbotron").fadeOut( 200, function(){ $(this).remove() } );
-		}
-		else {
-			$("#jumbotron-container").html( $("#jumbotron-template").html() );
-			$(".jumbotron").fadeIn( 200 );
-			$("#close-jumbotron").click( function() {
-				$(".jumbotron").fadeOut( 200, function(){ $(this).remove() } );
-			});
-		}
+		createJumbotron( "brand" );
 	});
+
+	$("#progress-button").click( function() {
+		createJumbotron( "get-status", function() {
+			var status = deck.getStatus();
+			for ( var n in status ) {
+				$(".jumbotron ul").append( "<li>" + msg.get( "status-list-item", n, status[n] ) + "</li>" );
+			}
+		});
+	});
+
+	$("#choose-range-button").click( chooseQuestionRange );
 
 });
