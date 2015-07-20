@@ -1,6 +1,7 @@
 {
 	"app-name": "Mult",
-	"deck-empty": "No more in deck. Great job! Starting over.",
+	"deck-empty": "You did them all! <strong>Great job!</strong> Want to try again?",
+	"try-again": "Try again!",
 	"next-question": "Next ",
 	"correct-streak-messages": [
 		"<strong>$1 in a row!</strong> Great job!",

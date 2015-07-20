@@ -116,9 +116,22 @@ var deck = {
 			group = this.asked;
 		}
 		else {
-			notify( "success", msg.get( "deck-empty" ), 3000 );
-			this.build( minMultiplier, maxMultiplier );
-			return this.selectQuestion();
+			$("#question-answer-input").slideUp( function () {
+				clearNotify();
+				notify( 
+					"success", 
+					"<div>" + msg.get( "deck-empty" ) + "</div>"
+						+ '<div style="text-align:right;">' 
+							+ '<a class="btn btn-success btn-sm" href="#" id="try-again-button" role="button">' + msg.get( 'try-again' ) + '</a>'
+						+ '</div>',
+					0
+				);
+				$("#try-again-button").click( function () {
+					clearNotify();
+					chooseQuestionRange();
+				} );
+			});
+			return false;
 		}
 
 		groupIndex = getRandomInt( 0, group.length - 1 );
@@ -222,10 +235,12 @@ var deck = {
 
 function setupQuestion () {
 	current = deck.selectQuestion();
-	$("#num-1").text( current.first );
-	$("#num-2").text( current.second );
-	$("#answer").val("");
-	refocus();
+	if ( current !== false ) {
+		$("#num-1").text( current.first );
+		$("#num-2").text( current.second );
+		$("#answer").val("");
+		refocus();
+	}
 }
 
 function getRandomInt ( min, max ) {
@@ -436,6 +451,7 @@ function chooseQuestionRange () {
 					}
 					deck.build( parseInt( range[0] ), parseInt( range[1] ) );
 					setupQuestion();
+					setTimeout( refocus, 500 );
 				});
 			} );
 		}
@@ -515,4 +531,10 @@ msg.loadI18nFromFile( "en", function() {
 
 	$("#choose-range-button").click( chooseQuestionRange );
 
+});
+
+$(document).ready(function () {
+	$(".navbar-nav li a").click(function(event) {
+		$(".navbar-collapse").collapse('hide');
+	});
 });
