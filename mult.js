@@ -1,12 +1,15 @@
 /**
  * Config variables
  */
-var teachStepTime = 350,
+var teachStepTime = 600,
 	highlightLength = 500,
 	minMultiplier = 0,
 	maxMultiplier = 12,
 	streakCycle = 5,
-	correctInRowRequired = 3;
+	correctInRowRequired = 3,
+
+	// How many milliseconds the student has to answer the question
+	tooSlowTimerLength = 4000;
 
 // basic form of the "current" multiplication object...as of this writing this
 // object gets overwritten on each new question, so really this just acts as a
@@ -16,6 +19,7 @@ var current = {
 	second: false
 };
 
+var tooSlowTimer;
 
 var msg = {
 
@@ -118,10 +122,10 @@ var deck = {
 		else {
 			$("#question-answer-input").slideUp( function () {
 				clearNotify();
-				notify( 
-					"success", 
+				notify(
+					"success",
 					"<div>" + msg.get( "deck-empty" ) + "</div>"
-						+ '<div style="text-align:right;">' 
+						+ '<div style="text-align:right;">'
 							+ '<a class="btn btn-success btn-sm" href="#" id="try-again-button" role="button">' + msg.get( 'try-again' ) + '</a>'
 						+ '</div>',
 					0
@@ -178,6 +182,19 @@ var deck = {
 
 		this.handleQuestionChange( newQuestionState, questionFromDeck );
 
+		clearNotify(); // remove any notifications
+		clearStreak(); // streak reset to zero
+		$("#answer").effect(
+			// highlight answer box red for 1 sec
+			"highlight", { color: "#a94442" }, highlightLength,
+
+			// fade out question and answer, the do teaching routine
+			function() {
+				$("#question-answer-input").fadeOut( 200, function() {
+					teachCurrent();
+				});
+			}
+		);
 	},
 
 	handleQuestionChange: function ( newQuestionState, questionFromDeck ) {
@@ -203,7 +220,7 @@ var deck = {
 					"question-removed-from-deck",
 					newQuestionState.first,
 					newQuestionState.second,
-					correctInRowRequired 
+					correctInRowRequired
 				),
 				4000
 			);
@@ -216,7 +233,7 @@ var deck = {
 		var needed;
 
 		correctNeeded[ correctInRowRequired ] = deck.unasked.length;
-		
+
 
 		for( var i = 0; i < deck.asked.length; i++ ) {
 			needed = correctInRowRequired - deck.asked[i].correct;
@@ -240,7 +257,17 @@ function setupQuestion () {
 		$("#num-2").text( current.second );
 		$("#answer").val("");
 		refocus();
+		resetTooSlowTimer();
 	}
+}
+
+function resetTooSlowTimer () {
+	stopTooSlowTimer();
+	tooSlowTimer = setTimeout( checkAnswer, tooSlowTimerLength );
+}
+
+function stopTooSlowTimer () {
+	clearTimeout( tooSlowTimer );
 }
 
 function getRandomInt ( min, max ) {
@@ -249,6 +276,10 @@ function getRandomInt ( min, max ) {
 }
 
 function checkAnswer () {
+
+	// stop the tooSlowTimer
+	stopTooSlowTimer();
+
 	var answer = parseInt( $("#answer").val() );
 	var QnA = current.first + ' x ' + current.second + ' = ' + (current.first * current.second);
 
@@ -260,7 +291,7 @@ function checkAnswer () {
 			function() {
 				deck.handleCorrect( current ); // remove pair from deck
 				handleStreak(); // if on a streak, congratulate student
-				
+
 				setupQuestion(); // setup next question
 				// @todo: should this be delated after streak? Could make streaks further apart
 				// and have this be a mental pause...good idea? Like every 10 in a row correct
@@ -271,19 +302,6 @@ function checkAnswer () {
 	}
 	else {
 		deck.handleIncorrect( current );
-		clearNotify(); // remove any notifications
-		clearStreak(); // streak reset to zero
-		$("#answer").effect(
-			// highlight answer box red for 1 sec
-			"highlight", { color: "#a94442" }, highlightLength,
-
-			// fade out question and answer, the do teaching routine
-			function() {
-				$("#question-answer-input").fadeOut( 200, function() {
-					teachCurrent();
-				});
-			}
-		);
 	}
 
 }
@@ -443,7 +461,7 @@ function chooseQuestionRange () {
 					if ( range === "custom" ) {
 						range = [
 							parseInt( $("#custom-range-min").val() ),
-							parseInt( $("#custom-range-max").val() )							
+							parseInt( $("#custom-range-max").val() )
 						];
 					}
 					else {
@@ -483,7 +501,7 @@ function createJumbotron ( templateName, preFadeIn, beforeEraseJumbotron ) {
 		showQuestionSection();
 	}
 	else if ( $(".jumbotron").size() ) {
-		$(".jumbotron").fadeOut( 200, function(){ 
+		$(".jumbotron").fadeOut( 200, function(){
 			$(this).remove();
 			addJumbo();
 		});
@@ -504,7 +522,9 @@ msg.loadI18nFromFile( "en", function() {
 	// 	checkAnswer();
 	// });
 
-	$("#answer").keydown( function(e){ 
+	$("#answer").keydown( function(e){
+		resetTooSlowTimer();
+
 	    var code = e.which; // recommended to use e.which, it's normalized across browsers
 	    if ( code==13 || code==9 ) {
 	    	e.preventDefault();
