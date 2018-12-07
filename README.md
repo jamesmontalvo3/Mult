@@ -1,7 +1,12 @@
 Mult
 ====
 
-A multiplication tables teaching tool.
+A multiplication tables teaching tool. 
+
+Demo
+----
+
+Try it: https://jamesmontalvo3.github.io/Mult/
 
 Goals
 -----
